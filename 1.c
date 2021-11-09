@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "myPreject.h"
+#include "myProject.h"
+
 
 int printMyName1(void)
 {
