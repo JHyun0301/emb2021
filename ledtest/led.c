@@ -2,9 +2,12 @@
 #include <fcntl.h>
 #include "led.h"
 #include <unistd.h>
+#include <stdio.h>
+
 
 static unsigned int ledValue = 0;
 static int fd = 0;
+
 
 int ledOnOff(int ledNum, int onOff)
 {
