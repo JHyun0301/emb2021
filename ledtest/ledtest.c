@@ -8,17 +8,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "led.h"
 
 #define LED_DRIVER_NAME "/dev/periled"
-
-void doHelp(void)
-{
-	printf("ledtest <hex byte> : data bit0 operation 1=>on 0=>off \r\n");
-	printf("   ledtest 0x05 ;4th and 1th led on\n");
-	printf("   ledtest 0xff 'all led on\n");
-	printf("   ledtest 0x00 'all led off\n");
-
-}
 
 int main(int argc, char **argv)
 {
@@ -27,22 +19,17 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		perror(" Args number is less than 2\n");
-		deHelp();
 		return 1;
 	}
+
 	data = strtol(argv[1], NULL, 16);
 	printf("wrate data : 0x%X\n", data);
 
-	fd = open(LED_DERIVER_NAME, O_RDWR);
-	if (fd < 0)
-	{
-		perror("driver (//dev//cnled) open error.\n");
-		return 1;
-	}
-
-	write(fd, &data, 4);
-	
-	close(fd);
+	ledLibInit();
+	ledOnOff(&data,argv[2]);
+	ledStatus();
+	ledLibExit();
 	return 0;
 }
+
 
