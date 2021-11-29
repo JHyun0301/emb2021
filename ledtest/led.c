@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
-#include "led.h"
 #include <unistd.h>
 #include <stdio.h>
-
+#include "led.h"
 
 static unsigned int ledValue = 0;
 static int fd = 0;
@@ -26,11 +25,13 @@ int ledStatus(void)
 		int result = ledValue >> j &1;
 			printf("%d", result);
 	}
+	printf("\n");
 }
+
 
 int ledLibInit(void)
 {
-	fd = open("/dev/periled",O_WRONLY);
+	fd = open(LED_DRIVER_NAME,O_WRONLY);
 	ledValue = 0;
 }
 
