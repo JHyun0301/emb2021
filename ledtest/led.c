@@ -1,3 +1,5 @@
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -6,7 +8,7 @@
 
 
 static unsigned int ledValue = 0;
-static int fd = 0;
+static int fd=0;
 
 
 int ledOnOff(int ledNum, int onOff)
@@ -33,7 +35,12 @@ int ledStatus(void)
 int ledLibInit(void)
 {
 	fd = open(LED_DRIVER_NAME,O_WRONLY);
-	ledValue = 0;
+	if ( fd == -1 )
+	{
+		perror("driver (//dev//cnled) open error.\n");
+		return 1;
+	}
+
 }
 
 int ledLibExit(void)

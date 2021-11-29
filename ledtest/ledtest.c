@@ -8,17 +8,31 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <unistd.h>
 #include "led.h"
 
 #define LED_DRIVER_NAME "/dev/periled"
 
+int main(int argc, char **argv)
+{
+	unsigned int data = 0;
+	unsigned int onoff = 0;
 
-int main(){
+	if (argc < 2)
+	{
+		perror(" Args number is less than 2\n");
+		return 1;
+	}
+
+	data = strtol(argv[1], NULL, 16);
+	printf("wrate data : 0x%X\n", data);
+	onoff = strtol(argv[2], NULL, 16);
 
 
 	ledLibInit();
-	ledOnOff(8,1);
+	ledOnOff(data,onoff);
 	ledStatus();
+	sleep(1);
 	ledLibExit();
 
 	return 0;
