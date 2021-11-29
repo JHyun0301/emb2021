@@ -12,10 +12,10 @@
 
 #define LED_DRIVER_NAME "/dev/periled"
 
-int main(int argc, char **argv)
+/*int main(int argc, char **argv)
 {
 	unsigned int data = 0;
-	unsigned int onff = 0;
+	unsigned int onoff = 0;
 	int fd;
 	if (argc < 2)
 	{
@@ -25,13 +25,16 @@ int main(int argc, char **argv)
 
 	data = strtol(argv[1], NULL, 16);
 	printf("wrate data : 0x%X\n", data);
-	onoff = strtoi(argv[2], NULL, 10);
+	onoff = strtol(argv[2], NULL, 10);
+	*/
+int main(){
 
 
 	ledLibInit();
-	ledOnOff(data,onoff);
+	ledOnOff(8,1);
 	ledStatus();
 	ledLibExit();
+
 	return 0;
 }
 
