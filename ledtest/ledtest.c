@@ -15,6 +15,7 @@
 int main(int argc, char **argv)
 {
 	unsigned int data = 0;
+	unsigned int onff = 0;
 	int fd;
 	if (argc < 2)
 	{
@@ -24,12 +25,13 @@ int main(int argc, char **argv)
 
 	data = strtol(argv[1], NULL, 16);
 	printf("wrate data : 0x%X\n", data);
+	onoff = strtoi(argv[2], NULL, 10);
+
 
 	ledLibInit();
-	ledOnOff(&data,argv[2]);
+	ledOnOff(data,onoff);
 	ledStatus();
 	ledLibExit();
 	return 0;
 }
-
 
