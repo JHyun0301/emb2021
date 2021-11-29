@@ -20,7 +20,7 @@ int ledOnOff(int ledNum, int onOff)
 
 int ledStatus(void)
 {
-	printf("%d, 2진수 변환: 1 = 켜져있는 led, 0 = 꺼져있는 led", ledValue);
+	printf("%d\r\n", ledValue);
 	for(int j = 7; j>= 0; --j)
 	{
 		int result = ledValue >> j &1;
@@ -40,4 +40,6 @@ int ledLibExit(void)
 	ledOnOff (0,0);
 	close(fd);
 }
+
+
 
