@@ -1,4 +1,4 @@
-#ifdef _LED_H_
+#ifndef _LED_H_
 #define _LED_H_
 int ledLibInit(void);
 int ledOnOff(int ledNum, int onOff);
