@@ -17,6 +17,7 @@
 #define HAVE_TO_FIND_2 "H: Handlers=kbd event"
 
 pthread_t buttonTh_id;
+int msgID;
 
 int probeButtonPath(char *newPath)
 {
@@ -54,6 +55,7 @@ int probeButtonPath(char *newPath)
 int buttonThFunc(void){
 	int readsize, inputIndex, fp;
 	struct input_event stEvent;
+	BUTTON_MSG_T messageTxData; 
 	while(1)
 	{
 		readsize = read(fp, &stEvent, sizeof(stEvent));
@@ -63,22 +65,36 @@ int buttonThFunc(void){
 		}
 		if (stEvent.type == EV_KEY)
 		{
-			printf("EV_KEY(");
 			switch(stEvent.code)
 		{
-			case KEY_VOLUMEUP : printf("Volume up key) : "); break;
-			case KEY_HOME : printf("Home key): "); break;
-			case KEY_SEARCH : printf("search key): "); break;
-			case KEY_BACK : printf("Back key): "); break;
-			case KEY_MENU : printf("Menu key): "); break;
-			case KEY_VOLUMEDOWN : printf("Volume down key): "); break;
+			case KEY_VOLUMEUP : messageTxData.keyInput = 1;			
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
+			case KEY_HOME : messageTxData.keyInput = 2;			
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
+			case KEY_SEARCH : messageTxData.keyInput = 3;			
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
+			case KEY_BACK : messageTxData.keyInput = 4;		
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
+			case KEY_MENU : messageTxData.keyInput = 5;		
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
+			case KEY_VOLUMEDOWN : messageTxData.keyInput = 6;			
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					    break;
 		}
-		if(stEvent.value) 
-			printf("pressed\n");
-		else 
-			printf("released\n");
-
+		if(stEvent.value) {
+			      messageTxData.pressed = 1;		
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed), 0); 
+		}
+		else {
+			messageTxData.pressed = 2;			
+					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed), 0); 
 	}
+		}
 	else
 		;
 }
@@ -86,12 +102,42 @@ int buttonThFunc(void){
 
 int buttonInit(void)
 {
+	BUTTON_MSG_T messageRxData;
 	char buttonPath[200] = {0, };
 	if(probeButtonPath(buttonPath) == 0)
 		return 0;
 	int fd = open(buttonPath, O_RDONLY);
-	int msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+	if(msgID == -1){
+		printf("msgID를 받아오지 못했습니다\r\n");
+		return -1;
+	}
+
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
+	if(err !=0 ) printf("Thread create error!\r\n");
+	
+	int messagevalue, messagevalue1 = 0;
+	messagevalue = msgrcv(msgID,&messageRxData, sizeof(messageRxData.keyInput),0,0);
+	messagevalue1 = msgrcv(msgID, &messageRxData, sizeof(messageRxData.pressed),0,0);
+
+	if (messageRxData.keyInput != 0)
+		{
+			printf("EV_KEY(");
+			switch(messageRxData.keyInput)
+		{
+			case KEY_VOLUMEUP : printf("KEY_VOLUMUP): "); break;
+			case KEY_HOME : printf("KEY_HOME): "); break;
+			case KEY_SEARCH : printf("KEY_SEARCH): "); break;
+			case KEY_BACK : printf("KEY_BACK): "); break;
+			case KEY_MENU : printf("KEY_MENU): "); break;
+			case KEY_VOLUMEDOWN : printf("KEY_VOLUMDOWN): "); break;
+		}
+		if(messageRxData.pressed !=0) printf("pressed\n"); 
+		else printf("released\n");		
+	}
+	else
+		;
+
 	return 1;
 }
 
