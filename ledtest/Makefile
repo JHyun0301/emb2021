@@ -1,8 +1,8 @@
-all : libMyPeri.a buzzertest.c 
-	arm-linux-gnueabi-gcc buzzertest.c -lpthread -l MyPeri -L. -o test
+all : libMyPeri.a lcdtexttest.c
+	arm-linux-gnueabi-gcc lcdtexttest.c -l MyPeri -L. -o test
 
-libMyPeri.a :  led.o button.o buzzer.o fnd.o
-	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o
+libMyPeri.a :  led.o button.o buzzer.o fnd.o lcdtext.o
+	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o lcdtext.o
 
 led.o : led.h led.c
 	arm-linux-gnueabi-gcc -c led.c -o led.o
@@ -15,6 +15,9 @@ buzzer.o : buzzer.h buzzer.c
 
 fnd.o : fnd.h fnd.c
 	arm-linux-gnueabi-gcc -c fnd.c -o fnd.o
+
+lcdtext.o : lcdtext.h lcdtext.c
+	arm-linux-gnueabi-gcc -c lcdtext.c -o lcdtext.o
 
 clean : 
 	rm -rf *.o *.a *.elf
