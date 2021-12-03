@@ -78,6 +78,7 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
 
 int buttonInit(void)
 {
+	printf("start\n");
 	struct input_event stEvent;
 	BUTTON_MSG_T messageRxData;
 	char buttonPath[200] = {0, };  //어느파일을 받아야하는지 받아옴
@@ -91,9 +92,13 @@ int buttonInit(void)
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
 	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
+	if(fd < 0) printf("open error\r\n");
+	else  printf("오픈 성공!");
+
 	
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
 	if(err !=0 ) printf("Thread create error!\r\n");
+	else printf("thread create success!");
 
 	while(1) 
 	{
@@ -119,8 +124,7 @@ int buttonInit(void)
 		else
 			;
 	}
-	 close(fd);
-}
 
+}
 
 
