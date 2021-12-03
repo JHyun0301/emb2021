@@ -7,10 +7,8 @@
 #include <sys/ioctl.h>
 #include "button.h"
 
-int main(int argc, char *argv[])
+int main(void)
 {
-	printf("hihi\n");
-    int buttonInit();
-
+	buttonInit();
 }
 	

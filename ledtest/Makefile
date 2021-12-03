@@ -1,8 +1,8 @@
-all : libMyPeri.a lcdtexttest.c
-	arm-linux-gnueabi-gcc lcdtexttest.c -l MyPeri -L. -o test
+all : libMyPeri.a 
+	arm-linux-gnueabi-gcc buttontest.c -l MyPeri -L. -lpthread -o test	
 
-libMyPeri.a :  led.o button.o buzzer.o fnd.o lcdtext.o
-	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o lcdtext.o
+libMyPeri.a :  led.o button.o buzzer.o fnd.o
+	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o
 
 led.o : led.h led.c
 	arm-linux-gnueabi-gcc -c led.c -o led.o
