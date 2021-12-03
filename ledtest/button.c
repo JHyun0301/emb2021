@@ -17,9 +17,9 @@
 #define HAVE_TO_FIND_2 "H: Handlers=kbd event"
 
 pthread_t buttonTh_id;
-int msgID;
+int msgID, err;
 
-int probeButtonPath(char *newPath)
+int probeButtonPath(char *newPath)  //event번호찾는 함수 
 {
 	int returnValue = 0; //button에 해당하는 event#를 찾았는지
 	int number = 0; // 찾았으면 여기에 집어넣음
@@ -52,10 +52,21 @@ int probeButtonPath(char *newPath)
 }
 
 
-int buttonThFunc(void){
-	int readsize, inputIndex, fp;
+void* buttonThFunc(void *arg){
+    int readsize, inputIndex, fp;
 	struct input_event stEvent;
+	char inputDevPath[200]={0,};
+	if ( probeButtonPath(inputDevPath) == 0)
+	{
+		printf ("ERROR! File Not Found!\r\n");
+		printf ("Did you insmod?\r\n");
+		return 0;
+	}    
+	printf ("inputDevPath: %s\r\n", inputDevPath);
+	fp = open(inputDevPath, O_RDONLY);
 	BUTTON_MSG_T messageTxData; 
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+
 	while(1)
 	{
 		readsize = read(fp, &stEvent, sizeof(stEvent));
@@ -70,34 +81,37 @@ int buttonThFunc(void){
 			case KEY_VOLUMEUP : messageTxData.keyInput = 1;			
 					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
 					    break;
-			case KEY_HOME : messageTxData.keyInput = 2;			
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+			case KEY_HOME : messageTxData.keyInput = 2;
+					msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
 					    break;
 			case KEY_SEARCH : messageTxData.keyInput = 3;			
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					  msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
 					    break;
 			case KEY_BACK : messageTxData.keyInput = 4;		
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
 					    break;
 			case KEY_MENU : messageTxData.keyInput = 5;		
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
-					    break;
+					msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+		       			    break;
 			case KEY_VOLUMEDOWN : messageTxData.keyInput = 6;			
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
+					      msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput), 0); 
 					    break;
 		}
-		if(stEvent.value) {
-			      messageTxData.pressed = 1;		
-					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed), 0); 
+		if(stEvent.value)
+		{
+		       	messageTxData.pressed = 1;		
+        					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed), 0); 
 		}
-		else {
+		else
+	       	{
 			messageTxData.pressed = 2;			
 					    msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed), 0); 
-	}
+		}
 		}
 	else
 		;
 }
+return NULL;
 }
 
 int buttonInit(void)
@@ -112,28 +126,33 @@ int buttonInit(void)
 		printf("msgID를 받아오지 못했습니다\r\n");
 		return -1;
 	}
+	else printf("msgID를 받아왔습니다\r\n");
 
-	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
+
+	err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
 	if(err !=0 ) printf("Thread create error!\r\n");
 	
-	int messagevalue, messagevalue1 = 0;
-	messagevalue = msgrcv(msgID,&messageRxData, sizeof(messageRxData.keyInput),0,0);
-	messagevalue1 = msgrcv(msgID, &messageRxData, sizeof(messageRxData.pressed),0,0);
+	int msgValue, msgValue1= 0;
+	msgValue = msgrcv(msgID,&messageRxData, sizeof(messageRxData.keyInput),0,0);
+	msgValue1 = msgrcv(msgID, &messageRxData, sizeof(messageRxData.pressed),0,0);
 
 	if (messageRxData.keyInput != 0)
 		{
 			printf("EV_KEY(");
 			switch(messageRxData.keyInput)
 		{
-			case KEY_VOLUMEUP : printf("KEY_VOLUMUP): "); break;
-			case KEY_HOME : printf("KEY_HOME): "); break;
-			case KEY_SEARCH : printf("KEY_SEARCH): "); break;
-			case KEY_BACK : printf("KEY_BACK): "); break;
-			case KEY_MENU : printf("KEY_MENU): "); break;
-			case KEY_VOLUMEDOWN : printf("KEY_VOLUMDOWN): "); break;
+			case 1 : printf("KEY_VOLUMUP):%d ",messageRxData.keyInput); break;
+			case 2 : printf("KEY_HOME):%d ",messageRxData.keyInput); break;
+			case 3 : printf("KEY_SEARCH): %d ",messageRxData.keyInput); break;
+			case 4 : printf("KEY_BACK): %d ",messageRxData.keyInput); break;
+			case 5 : printf("KEY_MENU): %d ",messageRxData.keyInput); break;
+			case 6 : printf("KEY_VOLUMDOWN): %d ",messageRxData.keyInput); break;
 		}
-		if(messageRxData.pressed !=0) printf("pressed\n"); 
-		else printf("released\n");		
+		if(messageRxData.pressed == 1) 
+		     printf("pressed\n"); 
+		else if(messageRxData.pressed == 2)
+		     printf("released\n");	
+			 else ;	
 	}
 	else
 		;

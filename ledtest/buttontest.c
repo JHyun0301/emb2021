@@ -4,10 +4,14 @@
 #include <linux/input.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 #include <sys/ioctl.h>
+#include "button.h"
+
 
 int main(void)
 {
-	buttonInit();
+	int buttonInit();
+
 }
 	
