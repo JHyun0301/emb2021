@@ -39,7 +39,6 @@ int lcdtextwrite( const char *str1, int lineFlag)
 	write(fd,&stlcd,sizeof(stTextLCD));
 }
 
-
 int lcdExit(void){
     close(fd);
     return 1;
