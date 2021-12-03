@@ -45,5 +45,4 @@ int lcdtextInit(void);
 int lcdtextwrite(const char *str1, int lineFlag);
 int lcdExit(void);
 
-
 #endif
