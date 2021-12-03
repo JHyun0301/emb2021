@@ -31,5 +31,5 @@ int main(int argc , char **argv)
  lcdtextInit();
  lcdtextwrite(stlcd.TextData[stlcd.cmdData-1], lineFlag);
  lcdExit();
-
 }
+
