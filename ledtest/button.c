@@ -84,6 +84,49 @@ int buttonInit(void)
 		return 0;
 	int fd = open(buttonPath, O_RDONLY);
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+	if(msgID == -1){
+		printf("msgID를 받아오지 못했습니다\r\n");
+		return -1;
+	}
+
+                fclose(fp);
+                if (returnValue == 1)
+	        sprintf(newPath, "%s%d", INPUT_DEVICE_LIST, number);
+
+                return returnValue;
+}
+
+
+static void* buttonThFunc(void *arg){
+        int readsize, inputIndex, fp;
+	struct input_event stEvent;
+	
+	BUTTON_MSG_T messageTxData; 
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+
+	while(1)
+	{
+		readsize = read(fp, &stEvent, sizeof(stEvent));
+		if (readsize != sizeof(stEvent))
+		{
+			continue;
+		}
+		if ((stEvent.type == EV_KEY) && (stEvent.value ==0))
+		{
+			messageTxData.keyInput = stEvent.code;
+			msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput),0);
+		}	
+	}
+}
+
+int buttonInit(void)
+{
+	BUTTON_MSG_T messageRxData;
+	char buttonPath[200] = {0, };
+	if(probeButtonPath(buttonPath) == 0)
+		return 0;
+	int fd = open(buttonPath, O_RDONLY);
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
 
 
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
@@ -115,6 +158,9 @@ int buttonInit(void)
 		;
 	}
 	 close(fd);
+}
+
+	return 1;
 }
 
 

@@ -13,6 +13,10 @@
 #define MAX_FND_NUM 6
 #define FND_DATA_BUFF_LEN (MAX_FND_NUM + 2)
 
+#define FND_DRIVER_NAME "/dev/perifnd"
+
+int fd;
+
 typedef struct FNDWriteDataForm_tag
 {
     char DataNumeric[FND_DATA_BUFF_LEN]; //숫자 0-9
@@ -20,44 +24,40 @@ typedef struct FNDWriteDataForm_tag
     char DataValid[FND_DATA_BUFF_LEN]; //숫자 0 or 1    
 }stFndWriteForm, *pStFndWriteForm;
 
-#define FND_DRIVER_NAME "dev/perifnd"
-int fd;
-int temp, i;
-stFndWriteForm stWriteData;
-
-int FNDInit(void)
-{
-    fd = open(FND_DRIVER_NAME, O_RDWR);
-    if(fd<0)
-    {
-        perror("driver open error\r\n");
-        return 0;
-    }
- return 1;   
-}
 
 int FNDWrite(int num, int dotflag){
+
+int temp, i;
+stFndWriteForm stWriteData;
 
     for(i=0; i<MAX_FND_NUM; i++)
     {
         stWriteData.DataDot[i] = (dotflag & (0x1 << i))? 1:0;
         stWriteData.DataValid[i] = 1;
     }
-    temp = num % 1000000; stWriteData.DataNumeric[0] = temp/100000;
-    temp = num % 100000; stWriteData.DataNumeric[1] = temp/10000;
-    temp = num % 10000; stWriteData.DataNumeric[2] = temp/1000;
-    temp = num % 1000; stWriteData.DataNumeric[3] = temp/100;
-    temp = num % 100; stWriteData.DataNumeric[4] = temp/10;
-    stWriteData.DataNumeric[5] = num %10;
-    
-    
-    write(fd, &stWriteData, sizeof(stFndWriteForm));
+    temp = num % 1000000;	stWriteData.DataNumeric[0]= temp /100000;
+	temp = num % 100000;	stWriteData.DataNumeric[1]= temp /10000;
+	temp = num % 10000;		stWriteData.DataNumeric[2] = temp /1000;
+	temp = num %1000;		stWriteData.DataNumeric[3] = temp /100;
+	temp = num %100;		stWriteData.DataNumeric[4] = temp /10;
+							stWriteData.DataNumeric[5] = num %10;
 
+    fd = open(FND_DRIVER_NAME, O_RDWR);
+    if(fd<0)
+    {
+        printf("driver open error\r\n");
+        return 0;
+    }
+
+    write(fd, &stWriteData, sizeof(stFndWriteForm));
+ return 1;   
 }
     
 
-int fndOff()
+void fndOff()
 {
+int i;
+stFndWriteForm stWriteData;
 	for (i = 0; i < MAX_FND_NUM ; i++ )
 	{
 		stWriteData.DataDot[i] =  0;  
@@ -71,7 +71,7 @@ int fndOff()
 
 int count_discount(int number){
 	int counter = 0;
-	
+
 		while(1)
 		{
 			if (!FNDWrite(counter , 0))
@@ -79,7 +79,7 @@ int count_discount(int number){
 
 			counter++;
 			sleep(1);
-			if (counter > number)
+			if (counter > number )
 				break;
 		}
 	return 0;
