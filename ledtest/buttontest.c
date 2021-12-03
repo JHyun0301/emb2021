@@ -8,6 +8,6 @@
 
 int main(void)
 {
-	buttonInit();
+	int buttonInit();
 }
 	
