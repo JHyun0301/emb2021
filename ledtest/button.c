@@ -54,7 +54,7 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
 }
 
 
-static void* buttonThFunc(void *arg){
+ void* buttonThFunc(void *arg){
         int readsize, inputIndex, fp;
 	struct input_event stEvent;
 	
@@ -80,11 +80,16 @@ int buttonInit(void)
 {
 	struct input_event stEvent;
 	BUTTON_MSG_T messageRxData;
-	char buttonPath[200] = {0, };
+	char buttonPath[200] = {0, };  //어느파일을 받아야하는지 받아옴
 	if(probeButtonPath(buttonPath) == 0)
+	{
+		printf ("ERROR! File Not Found!\r\n");
+		printf ("Did you insmod?\r\n");
 		return 0;
+	}  //오류시
 
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
 	
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
@@ -98,22 +103,21 @@ int buttonInit(void)
 
 		if (messageRxData.keyInput != 0)
 		{
-			printf("EV_KEY");
+			printf("EV_KEY(");
 			switch(messageRxData.keyInput)
-		{
-			case KEY_VOLUMEUP : printf("KEY_VOLUMUP): "); break;
-			case KEY_HOME : printf("KEY_HOME): "); break;
-			case KEY_SEARCH : printf("KEY_SEARCH): "); break;
-			case KEY_BACK : printf("KEY_BACK): "); break;
-		 	case KEY_MENU : printf("KEY_MENU): "); break;
-			case KEY_VOLUMEDOWN : printf("KEY_VOLUMDOWN): "); break;
+			{
+				case KEY_VOLUMEUP : printf("KEY_VOLUMUP): "); break;
+				case KEY_HOME : printf("KEY_HOME): "); break;
+				case KEY_SEARCH : printf("KEY_SEARCH): "); break;
+				case KEY_BACK : printf("KEY_BACK): "); break;
+			 	case KEY_MENU : printf("KEY_MENU): "); break;
+				case KEY_VOLUMEDOWN : printf("KEY_VOLUMDOWN): "); break;
+			}
+			if(messageRxData.pressed !=0) printf("pressed\n"); 
+			else printf("released\n");		
 		}
-		if(messageRxData.pressed !=0) printf("pressed\n"); 
-		else printf("released\n");		
-		}
-
-	else
-		;
+		else
+			;
 	}
 	 close(fd);
 }
