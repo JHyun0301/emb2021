@@ -5,9 +5,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include "button.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	int buttonInit();
+	printf("hihi\n");
+    int buttonInit();
+
 }
 	

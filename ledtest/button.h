@@ -10,5 +10,8 @@ typedef struct
 }BUTTON_MSG_T;
 
 int buttonInit(void);
+void* buttonThFunc(void *arg);
+int probeButtonPath(char *newPath);
+
 #endif
 
