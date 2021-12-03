@@ -5,9 +5,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include "button.h"
 
 int main(void)
 {
-	int buttonInit();
+	buttonInit();
 }
 	
