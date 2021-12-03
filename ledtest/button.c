@@ -78,17 +78,18 @@ static void* buttonThFunc(void *arg){
 
 int buttonInit(void)
 {
+	struct input_event stEvent;
 	BUTTON_MSG_T messageRxData;
 	char buttonPath[200] = {0, };
 	if(probeButtonPath(buttonPath) == 0)
 		return 0;
-	int fd = open(buttonPath, O_RDONLY);
+
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
-
-
+	int fd = open(buttonPath, O_RDONLY);
+	
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
 	if(err !=0 ) printf("Thread create error!\r\n");
-	
+
 	while(1) 
 	{
 		int msgValue, msgValue1= 0;
@@ -117,7 +118,5 @@ int buttonInit(void)
 	 close(fd);
 }
 
-	return 1;
-}
 
 
