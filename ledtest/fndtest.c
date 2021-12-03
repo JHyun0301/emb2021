@@ -17,22 +17,25 @@
 int main(int argc , char **argv)
 {
     int number;
+    int dot = 0;
+
 
 	if (argc <  2)
 	{
 		printf("error!");
 		return 1;
 	}
-		number = atoi(argv[2]);
+		number = atoi(argv[1]);
+        printf("number : %d\r\n", number);
+        printf("dot : %d\r\n", dot);
 
-        int FNDInit(void);
-        int FNDWrite(number, 0);
+        
+        FNDWrite(number, 0);
         sleep(2);
-        int fndOff(void);
-        int count_discount(int number);
-        sleep(number);
-        int fndOff(void);
-        int FNDExit(void);
+        fndOff();
+        count_discount(number);
+        fndOff();
+        FNDExit();
 
 
 	
