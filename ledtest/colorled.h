@@ -8,7 +8,7 @@ int pwmSetPeriod(int Period, int pwmIndex);
 int pwmSetPercent(int percent, int ledColor);
 int pwmStartAll(void);
 int pwmLedInit(void);
-int main(int argc, char *argv[]);
+
 
 #define COLOR_LED_DEV_R_ "/sys/class/pwm/pwmchip0/"
 #define COLOR_LED_DEV_G_ "/sys/class/pwm/pwmchip1/"
