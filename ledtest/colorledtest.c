@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <linux/input.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include "colorled.h"
+
+
+int main(int argc, char *argv[])
+{
+	if (argc != 4)
+	{
+	       	printf ("colorledtest.elf 0-100 0-100 0-100\r\n");
+		printf ("ex) colorledtest.elf 100 100 100 ==> full white color\r\n");
+		return 0; }
+
+	pwmLedInit();
+	pwmInactiveAll();
+}
+
