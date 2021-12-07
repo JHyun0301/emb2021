@@ -56,7 +56,7 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
 int buttonThread(void)
 {
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
-	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
+	int err = pthread_create(&buttonTh_id, NULL, buttonThFunc, NULL);
         if(err !=0 ) printf("Thread create error!\r\n");
         else printf("thread create success!");
 }
@@ -107,6 +107,7 @@ int buttonInit(void)
 		else
 			;
 	}
+	pthread_join(buttonTh_id,NULL);
     close(fd);
 	}
 
