@@ -13,8 +13,8 @@
 
 int main(int argc, char **argv)
 {
-
-	int printtemp();
+	double temp = printtemp();
+	printf("%0.2lf\r\n", temp);
 
 	return 0;
 }
