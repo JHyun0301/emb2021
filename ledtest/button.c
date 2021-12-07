@@ -131,6 +131,10 @@ int buttonInit(void)
 			;
 	}
 
+    int buttonLibExit(void)
+{
+	pthread_cancel(buttonTh_id);
+}
 }
 
 
