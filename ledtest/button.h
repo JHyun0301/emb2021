@@ -11,6 +11,7 @@ typedef struct
 
 int probeButtonPath(char *newPath);
 int buttonInit(void);
+int buttonThread(void);
 void* buttonThFunc(void *arg);
 
 #endif
