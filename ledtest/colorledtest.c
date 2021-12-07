@@ -16,6 +16,6 @@ int main(int argc, char *argv[])
 		printf ("ex) colorledtest.elf 100 100 100 ==> full white color\r\n");
 		return 0; }
 
-	pwmStartAll();
+	pwmLedInit();
 }
 
