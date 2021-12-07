@@ -28,7 +28,7 @@ int spi_init(char filename[40])
 	}
 
 	//possible modes: mode |= SPI_LOOP; mode |= SPI_CPHA; mode |= SPI_CPOL; mode |= SPI_LSB_FIRST; mode |= SPI_CS_HIGH; mode |= SPI_3WIRE; mode |= SPI_NO_CS; mode |= SPI_READY;
-	mode |= SPI_3WIRE ; 
+	//mode |= SPI_3WIRE ; 
 
 	if (ioctl(file, SPI_IOC_RD_MODE, &mode) < 0)
 	{
@@ -83,11 +83,7 @@ int printtemp(void){
         value |= (1<<i);
     }
 	
-    double temp = (double)value+0.0625;
-	printf("%lf", temp);
-
-
-	return temp;
-
-
+    double temp = (double)value*0.0625;
+	printf("curren temp: %lf", temp);
+	return 0;
 }
