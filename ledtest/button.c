@@ -53,31 +53,6 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
                 return returnValue;
 }
 
-
- void* buttonThFunc(void *arg){
-    int readsize, inputIndex, fp;
-	struct input_event stEvent;
-	
-	BUTTON_MSG_T messageTxData; 
-    messageTxData.messageNum =1;
-	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
-
-	while(1)
-	{
-		readsize = read(fp, &stEvent, sizeof(stEvent));
-		if (readsize != sizeof(stEvent))
-		{
-			continue;
-		}
-		if ((stEvent.type == EV_KEY) && (stEvent.value ==0))
-		{
-			messageTxData.keyInput = stEvent.code;
-			msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput),0);
-          msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed),0);
-		}	
-	}
-}
-
 int buttonThread(void)
 {
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
@@ -85,6 +60,7 @@ int buttonThread(void)
         if(err !=0 ) printf("Thread create error!\r\n");
         else printf("thread create success!");
 }
+
 
 int buttonInit(void)
 {
@@ -103,6 +79,7 @@ int buttonInit(void)
 	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
 	if(fd == -1) printf("open error\r\n");
+	else printf("open success\r\n");
 
 	buttonThread();
 	
@@ -130,11 +107,36 @@ int buttonInit(void)
 		else
 			;
 	}
+    close(fd);
+	}
 
-    int buttonLibExit(void)
-{
-	pthread_cancel(buttonTh_id);
+
+ void* buttonThFunc(void *arg){
+    	int readsize, inputIndex, fp;
+	struct input_event stEvent;
+	
+	BUTTON_MSG_T messageTxData; 
+   	messageTxData.messageNum =1;
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+
+	while(1)
+	{
+		readsize = read(fp, &stEvent, sizeof(stEvent));
+		if (readsize != sizeof(stEvent))
+		{
+			continue;
+		}
+		if ((stEvent.type == EV_KEY) && (stEvent.value ==0))
+		{
+			messageTxData.keyInput = stEvent.code;
+			msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput),0);
+          msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed),0);
+		}	
+	}
 }
-}
+
+
+
+
 
 

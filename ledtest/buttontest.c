@@ -10,6 +10,5 @@
 int main(void)
 {
 	buttonInit();
-    buttonLibExit();
 }
 	
