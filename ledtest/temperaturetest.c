@@ -13,6 +13,7 @@
 
 int main(int argc, char **argv)
 {
+
 	int printtemp();
 
 	return 0;
