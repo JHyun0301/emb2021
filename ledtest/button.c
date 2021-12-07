@@ -55,10 +55,11 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
 
 
  void* buttonThFunc(void *arg){
-        int readsize, inputIndex, fp;
+    int readsize, inputIndex, fp;
 	struct input_event stEvent;
 	
 	BUTTON_MSG_T messageTxData; 
+    messageTxData.messageNum =1;
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
 
 	while(1)
@@ -72,8 +73,17 @@ int probeButtonPath(char *newPath)  //event번호찾는 함수
 		{
 			messageTxData.keyInput = stEvent.code;
 			msgsnd(msgID, &messageTxData, sizeof(messageTxData.keyInput),0);
+          msgsnd(msgID, &messageTxData, sizeof(messageTxData.pressed),0);
 		}	
 	}
+}
+
+int buttonThread(void)
+{
+	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
+        if(err !=0 ) printf("Thread create error!\r\n");
+        else printf("thread create success!");
 }
 
 int buttonInit(void)
@@ -89,17 +99,13 @@ int buttonInit(void)
 		return 0;
 	}  //오류시
 
-	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
+
 	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
 	if(fd == -1) printf("open error\r\n");
 
-
+	buttonThread();
 	
-	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
-	if(err !=0 ) printf("Thread create error!\r\n");
-	else printf("thread create success!");
-
 	while(1) 
 	{
 		int msgValue, msgValue1= 0;
