@@ -67,7 +67,7 @@ int pwmSetPeriod(int Period, int pwmIndex)
 		default: 
 			fd = open ( COLOR_LED_DEV_B_ PWM_PERIOD, O_WRONLY); break;
 	}
-//printf ("Set pwm%d, Period:%d\r\n",pwmIndex, Period);
+	printf ("Set pwm%d, Period:%d\r\n",pwmIndex, Period);
 	dprintf(fd, "%d", Period);
 	close(fd);
 	return 1;
@@ -81,7 +81,7 @@ int pwmSetPercent(int percent, int ledColor)
 		return 0;
 	}
 	int duty = (100- percent) * PWM_PERIOD_NS / 100;
-//LED Sinking.
+
 	pwmSetDuty(duty, ledColor);
 	return 0;
 }
