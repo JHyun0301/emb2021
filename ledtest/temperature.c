@@ -86,4 +86,5 @@ int printtemp(void){
     double temp = (double)value+0.0625;
 
 	return temp;
+	
 }
