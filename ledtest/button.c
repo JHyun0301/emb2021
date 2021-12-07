@@ -103,12 +103,7 @@ int buttonInit(void)
 	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
 	if(fd == -1) printf("open error\r\n");
-	else if(fd == 0) printf("seccess\r\n");
-	else printf("open");
 
-	close(fd);
-
- /*
 	buttonThread();
 	
 	while(1) 
@@ -135,7 +130,11 @@ int buttonInit(void)
 		else
 			;
 	}
-*/
+
+    int buttonLibExit(void)
+{
+	pthread_cancel(buttonTh_id);
+}
 }
 
 
