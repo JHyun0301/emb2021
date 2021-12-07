@@ -3,7 +3,7 @@ all : libMyPeri.a
 	arm-linux-gnueabi-gcc colorledtest.c -l MyPeri -L. -lpthread -o test	
 
 libMyPeri.a :  led.o button.o buzzer.o fnd.o colorled.o
-	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o colorled.o
+	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o colorled.o 
 
 led.o : led.h led.c
 	arm-linux-gnueabi-gcc -c led.c -o led.o
