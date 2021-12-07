@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "colorled.h"
+
 int fd;
 
 int main(int argc, char *argv[])
@@ -19,7 +20,6 @@ int main(int argc, char *argv[])
 	int green = atoi(argv[2]);
 	int blue = atoi(argv[3]);
 
-	// inverse
 	red = MAX_INPUT_VALUE - red;
 	green = MAX_INPUT_VALUE - green;
 	blue = MAX_INPUT_VALUE - blue;
@@ -28,23 +28,15 @@ int main(int argc, char *argv[])
 	int redduty = PWM_FREQUENCY * red / MAX_INPUT_VALUE;
 	int greenduty = PWM_FREQUENCY * green / MAX_INPUT_VALUE;
 	int blueduty = PWM_FREQUENCY * blue / MAX_INPUT_VALUE;
-
-	pwmActive(1,RED_INDEX);
-    writePWMPeriod(PWM_FREQUENCY, RED_INDEX);
-	writePWMDuty(redduty, RED_INDEX);
-	pwmEnable(1,RED_INDEX);
-
-    pwmActive(1,GREEN_INDEX);
-	writePWMPeriod(PWM_FREQUENCY, GREEN_INDEX);
-	writePWMDuty(greenduty, GREEN_INDEX);
-	pwmEnable(1,GREEN_INDEX);
- 
-    pwmActive(1,BLUE_INDEX);
-	writePWMPeriod(PWM_FREQUENCY, BLUE_INDEX);
-	writePWMDuty(blueduty, BLUE_INDEX);
-	pwmEnable(1,BLUE_INDEX);
 	
-    sleep(3);
-	return 0;
+   pwmActiveAll();
+   pwmSetDuty(redduty, 0); //R<-0
+   pwmSetDuty(greenduty, 1); //G<-0
+   pwmSetDuty(blueduty, 2); //B<-0
+   pwmSetPeriod(PWM_PERIOD_NS, 0); pwmSetPeriod(PWM_PERIOD_NS, 1); pwmSetPeriod(PWM_PERIOD_NS, 2);
+   pwmStartAll();
+   return 0;
+	
+
 }
 
