@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include "button.h"
 
-#define INPUT_DEVICE_LIST "/dev/input/event"
+#define INPUT_DEVICE_LIST "dev/input/event"
 
 #define PROBE_FILE "/proc/bus/input/devices"
 
@@ -92,8 +92,8 @@ int buttonInit(void)
 	msgID = msgget(MESSAGE_ID, IPC_CREAT|0666);
 	printf ("buttonPath: %s\r\n", buttonPath);
 	int fd = open(buttonPath, O_RDONLY);
-	if(fd < 0) printf("open error\r\n");
-	else  printf("오픈 성공!");
+	if(fd == -1) printf("open error\r\n");
+
 
 	
 	int err = pthread_create(&buttonTh_id, NULL, &buttonThFunc, NULL);
