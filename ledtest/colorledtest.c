@@ -9,8 +9,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "colorled.h"
+int fd;
 
 int main(int argc, char *argv[])
+
+ 
 {
 	int red = atoi(argv[1]);
 	int green = atoi(argv[2]);
@@ -42,7 +45,6 @@ int main(int argc, char *argv[])
 	pwmEnable(1,BLUE_INDEX);
 	
     sleep(3);
-
 	return 0;
 }
 
