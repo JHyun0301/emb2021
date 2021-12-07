@@ -103,14 +103,14 @@ int pwmStartAll(void)
 
 
 int pwmLedInit(void)
-{ //Initialize
+{ 
 	pwmActiveAll();
 	pwmSetDuty(0, 0); //R<-0
 	pwmSetDuty(0, 1); //G<-0
 	pwmSetDuty(0, 2); //B<-0
 	pwmSetPeriod(PWM_PERIOD_NS, 0); pwmSetPeriod(PWM_PERIOD_NS, 1); pwmSetPeriod(PWM_PERIOD_NS, 2);
 	pwmStartAll();
-	return 0; 
+	return 0;
 }
 
 
