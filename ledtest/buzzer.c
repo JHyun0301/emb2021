@@ -52,6 +52,7 @@ int setEnable(int benable){
 	close(fd);
 }
 
+
 int setFrequency(int bfrequency){
   	char path[200];
 	 sprintf(path, "%s%s", gBuzzerBaseSysDir, BUZZER_FREQUENCY_NAME);
@@ -63,13 +64,13 @@ int setFrequency(int bfrequency){
 int buzzerPlaySong(int scale){
 	int frequency;
 
-	if(scale == 1) frequency = 261; //도
-	else if(scale == 2) frequency = 293; //레
-	else if(scale == 3) frequency = 329; //미
-	else if(scale == 4) frequency = 349; //파
-	else if(scale == 5) frequency = 392; //솔
-	else if(scale == 6) frequency = 440; //라
-	else if(scale == 7) frequency = 496; //시
+	if(scale == 0) frequency = 261; //도
+	else if(scale == 1) frequency = 293; //레
+	else if(scale == 2) frequency = 329; //미
+	else if(scale == 3) frequency = 349; //파
+	else if(scale == 4) frequency = 392; //솔
+	else if(scale == 5) frequency = 440; //라
+	else if(scale == 6) frequency = 496; //시
 	else frequency = 523; //도
 	
 	
