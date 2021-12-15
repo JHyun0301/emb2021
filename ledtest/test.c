@@ -18,6 +18,7 @@
 #include "led.h"
 #include "buzzer.h"
 #include "fnd.h"
+#include "lcdtext.h"
 
 #define LED_DRIVER_NAME "/dev/periled"
 
@@ -28,12 +29,18 @@ int main(int argc, char **argv)
     int scale;
      int number;
     int dot = 0;
+    stTextLCD  stlcd; 
+	int lineFlag = 1;
+    printf("lineFlag :%d\n", lineFlag);
+	printf("string:%s\n"," ESCAPE GAME ");
 
-	if (argc < 2)
-	{
-		perror(" Args number is less than 2\n");
-		return 1;
-	}
+    int lineFlag1 = 2;
+    printf("lineFlag1 :%d\n", lineFlag1);
+	printf("string:%s\n","    START    ");
+
+		memcpy(stlcd.TextData[CMD_DATA_WRITE_LINE_1 - 1],"  ESCAPE  GAME  ",16);
+        memcpy(stlcd.TextData[CMD_DATA_WRITE_LINE_2 - 1],"      START     ",16);
+
 
 	data = strtol(argv[1], NULL, 16);
 	printf("wrate data : 0x%X\n", data);
@@ -51,12 +58,16 @@ int main(int argc, char **argv)
 
    ledLibInit();
    buzzerInit();
-	
+   lcdtextInit();
+
    ledOnOff(data,onoff); 
    buzzerPlaySong(scale);
-    FNDWrite(number, 0);
-
-   
+   FNDWrite(number, 0);
+   lcdtextwrite(stlcd.TextData[CMD_DATA_WRITE_LINE_1-1], lineFlag);
+   lcdtextwrite(stlcd.TextData[CMD_DATA_WRITE_LINE_2-1], lineFlag1);
+    
+ 
+ 
    ledStatus();
 
 
@@ -71,7 +82,7 @@ int main(int argc, char **argv)
     FNDExit();
    buzzerExit();
    ledLibExit();
-
+   lcdExit();
 	return 0;
 }
 
