@@ -19,6 +19,7 @@
 #include "buzzer.h"
 #include "fnd.h"
 #include "lcdtext.h"
+#include "colorled.h"
 
 #define LED_DRIVER_NAME "/dev/periled"
 
@@ -31,6 +32,11 @@ int main(int argc, char **argv)
     int dot = 0;
     stTextLCD  stlcd; 
 	int lineFlag = 1;
+    int red;
+	int green;
+	int blue;
+
+
     printf("lineFlag :%d\n", lineFlag);
 	printf("string:%s\n"," ESCAPE GAME ");
 
@@ -45,8 +51,6 @@ int main(int argc, char **argv)
 	data = strtol(argv[1], NULL, 16);
 	printf("wrate data : 0x%X\n", data);
 
-	onoff = strtol(argv[2], NULL, 16);
-
     scale = atoi(argv[1]);
     printf("scale : %d \n", scale);
 
@@ -54,19 +58,48 @@ int main(int argc, char **argv)
      printf("number : %d\r\n", number);
     printf("dot : %d\r\n", dot);
 
+    switch ( scale){
+        case 0 : red = 100; green = 0; blue = 0; break;
+        case 1 : red = 100; green = 50;  blue = 0; break;
+        case 2 : red = 100; green = 100;  blue = 0; break;
+        case 3 : red = 0; green = 100;  blue = 0; break;
+        case 4 : red = 0; green = 0;  blue = 50; break;
+        case 5 : red = 0; green = 0;  blue = 100; break;
+        case 6 : red = 100; green = 0;  blue = 100; break;
+        case 7 : red = 100; green = 100;  blue = 100; break;
+
+        default : red = 0; green = 0;  blue = 0; 
+    }
+
+    
+    red = MAX_INPUT_VALUE - red;
+	green = MAX_INPUT_VALUE - green;
+	blue = MAX_INPUT_VALUE - blue;
+	
+	// percentage
+	int redduty = PWM_FREQUENCY * red / MAX_INPUT_VALUE;
+	int greenduty = PWM_FREQUENCY * green / MAX_INPUT_VALUE;
+	int blueduty = PWM_FREQUENCY * blue / MAX_INPUT_VALUE;
+	
 
 
+   pwmActiveAll();
    ledLibInit();
    buzzerInit();
    lcdtextInit();
 
-   ledOnOff(data,onoff); 
+
+   pwmSetDuty(redduty, 0); //R<-0
+   pwmSetDuty(greenduty, 1); //G<-0
+   pwmSetDuty(blueduty, 2); //B<-0
+   pwmSetPeriod(PWM_PERIOD_NS, 0); pwmSetPeriod(PWM_PERIOD_NS, 1); pwmSetPeriod(PWM_PERIOD_NS, 2);
+   pwmStartAll();
+   ledOnOff(data,1); 
    buzzerPlaySong(scale);
    FNDWrite(number, 0);
    lcdtextwrite(stlcd.TextData[CMD_DATA_WRITE_LINE_1-1], lineFlag);
    lcdtextwrite(stlcd.TextData[CMD_DATA_WRITE_LINE_2-1], lineFlag1);
     
- 
  
    ledStatus();
 
