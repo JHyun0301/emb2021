@@ -1,9 +1,9 @@
 
 all : libMyPeri.a 
-	arm-linux-gnueabi-gcc colorledtest.c -l MyPeri -L. -lpthread -o test	
+	arm-linux-gnueabi-gcc test.c -l MyPeri -L. -lpthread -o test	
 
-libMyPeri.a :  led.o button.o buzzer.o fnd.o colorled.o
-	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o colorled.o 
+libMyPeri.a :  led.o button.o buzzer.o fnd.o colorled.o lcdtext.o touch.o
+	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o colorled.o lcdtext.o touch.o
 
 led.o : led.h led.c
 	arm-linux-gnueabi-gcc -c led.c -o led.o
@@ -19,6 +19,12 @@ fnd.o : fnd.h fnd.c
 
 colorled.o : colorled.h colorled.c
 	arm-linux-gnueabi-gcc -c colorled.c -o colorled.o
+
+lcdtext.o : lcdtext.h lcdtext.c
+	arm-linux-gnueabi-gcc -c lcdtext.c -o lcdtext.o
+
+touch.o : touch.h touch.c
+	arm-linux-gnueabi-gcc -c touch.c -o touch.o
 
 clean : 
 	rm -rf *.o *.a *.elf

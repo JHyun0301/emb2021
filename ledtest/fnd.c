@@ -69,17 +69,17 @@ stFndWriteForm stWriteData;
 }
 
 
-int count_discount(int number){
-	int counter = 0;
+int count_discount(int count){
+	int counter = 300;
 
 		while(1)
 		{
 			if (!FNDWrite(counter , 0))
 				break;
 
-			counter++;
+			counter--;
 			sleep(1);
-			if (counter > number )
+			if (counter < 0 )
 				break;
 		}
 	return 0;

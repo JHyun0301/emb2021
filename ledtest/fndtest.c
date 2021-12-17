@@ -30,7 +30,7 @@ int main(int argc , char **argv)
         printf("dot : %d\r\n", dot);
 
         
-        FNDWrite(number, 0);
+        FNDWrite(300, 0);
         sleep(2);
         fndOff();
         count_discount(number);

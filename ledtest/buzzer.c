@@ -15,7 +15,7 @@
 #define BUZZER_FILENAME "peribuzzer"
 #define BUZZER_ENABLE_NAME "enable"
 #define BUZZER_FREQUENCY_NAME "frequency"
-
+pthread_t buzzer_id;
 char gBuzzerBaseSysDir[128];
 int fd, fd1;
 
@@ -52,6 +52,7 @@ int setEnable(int benable){
 	close(fd);
 }
 
+
 int setFrequency(int bfrequency){
   	char path[200];
 	 sprintf(path, "%s%s", gBuzzerBaseSysDir, BUZZER_FREQUENCY_NAME);
@@ -63,23 +64,18 @@ int setFrequency(int bfrequency){
 int buzzerPlaySong(int scale){
 	int frequency;
 
-	if(scale == 1) frequency = 261; //도
-	else if(scale == 2) frequency = 293; //레
-	else if(scale == 3) frequency = 329; //미
-	else if(scale == 4) frequency = 349; //파
-	else if(scale == 5) frequency = 392; //솔
-	else if(scale == 6) frequency = 440; //라
-	else if(scale == 7) frequency = 496; //시
-	else frequency = 523; //도
-	
-	
+ 	if(scale == 0) frequency = 294; 
+	else if(scale == 1) frequency = 349; 
+	else if(scale == 2) frequency = 415; 
+
     setEnable(1);
 	setFrequency(frequency);
 
 }
 
 int buzzerStopSong(void){
-	 setEnable(0);
+    pthread_cancel(buzzer_id);
+//	 setEnable(0);
 }
 
 int buzzerExit(void){
